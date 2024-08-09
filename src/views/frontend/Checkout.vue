@@ -151,7 +151,7 @@
           </section>
         </div>
       </div>
-      <Successful v-else-if="order.is_paid === true || is_paid === true" :orderInfo="order" />
+      <Successful v-else-if="order.is_paid === true" :orderInfo="order" />
     </div>
   </div>
 </template>
@@ -169,7 +169,6 @@ export default {
       orderId: "",
       isLoading: false,
       isProcessing: false,
-      is_paid: false,
     };
   },
   components: {
@@ -199,7 +198,6 @@ export default {
         };
         console.log(this.order);
         console.log(this.order.is_paid);
-        console.log("is_paid", this.is_paid);
         this.isLoading = false;
       } else {
         console.log("No such document!");
@@ -219,8 +217,8 @@ export default {
           const timestamp = Math.floor(new Date().getTime() / 1000); // 獲取當前timestamp
           if (res.data.success) {
             this.fetchUserData(timestamp);
-            this.is_paid = true;
             this.getOrder(this.orderId);
+            this.$forceUpdate();
             Toast.fire({
               title: "付款成功",
               icon: "success",
