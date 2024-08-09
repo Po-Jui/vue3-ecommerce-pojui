@@ -147,6 +147,24 @@
                   確認付款
                 </button>
               </div>
+              <v-dialog v-model="loading" hide-overlay persistent max-width="300">
+                <v-card>
+                  <v-card-text>
+                    <div class="text-center">
+                      <v-progress-circular
+                        :size="70"
+                        :width="7"
+                        indeterminate
+                        color="primary"
+                      ></v-progress-circular>
+                      <p>正在處理您的訂單付款...</p>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+              <!-- <div>
+                <v-btn color="primary" @click="startCheckout">開始結帳</v-btn>                
+              </div> -->
             </div>
           </section>
         </div>
@@ -169,6 +187,7 @@ export default {
       orderId: "",
       isLoading: false,
       isProcessing: false,
+      loading: false,
     };
   },
   components: {
@@ -179,6 +198,17 @@ export default {
     this.getOrder(this.orderId);
   },
   methods: {
+    // startCheckout() {
+    //   this.loading = true;
+    //   // 模擬結帳過程
+    //   setTimeout(() => {
+    //     this.loading = false;
+    //     Toast.fire({
+    //       title: "結帳成功",
+    //       icon: "success",
+    //     });
+    //   }, 3000);
+    // },
     async getOrder(orderId) {
       this.isLoading = true;
       const orderDoc = doc(db, "orderInfo", orderId);
@@ -209,31 +239,36 @@ export default {
       }
     },
     payOrder() {
+      this.loading = true;
+      // 模擬結帳過程
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`;
       this.isProcessing = true;
-      this.$http
-        .post(url)
-        .then((res) => {
-          const timestamp = Math.floor(new Date().getTime() / 1000); // 獲取當前timestamp
-          if (res.data.success) {
-            this.fetchUserData(timestamp);
-            setTimeout(() => {
-              this.getOrder(this.orderId);
-            }, 1000);
+      setTimeout(() => {
+        this.$http
+          .post(url)
+          .then((res) => {
+            const timestamp = Math.floor(new Date().getTime() / 1000); // 獲取當前timestamp
+            if (res.data.success) {
+              this.fetchUserData(timestamp);
+              setTimeout(() => {
+                this.getOrder(this.orderId);
+              }, 1000);
+              this.loading = false;
+              Toast.fire({
+                title: "付款成功",
+                icon: "success",
+              });
+            }
+            this.isProcessing = false;
+          })
+          .catch(() => {
             Toast.fire({
-              title: "付款成功",
-              icon: "success",
+              title: "付款失敗，請稍後再試",
+              icon: "error",
             });
-          }
-          this.isProcessing = false;
-        })
-        .catch(() => {
-          Toast.fire({
-            title: "付款失敗，請稍後再試",
-            icon: "error",
+            this.isProcessing = false;
           });
-          this.isProcessing = false;
-        });
+      }, 3000);
     },
     async fetchUserData(timestamp) {
       // 指定集合和文檔 ID
