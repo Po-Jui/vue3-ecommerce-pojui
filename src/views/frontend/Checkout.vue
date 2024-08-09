@@ -196,6 +196,7 @@ export default {
           ...orderData,
           cartInfo: { ...subCollectionData },
         };
+        console.log(this.order);
         console.log(this.order.is_paid);
         this.isLoading = false;
       } else {
@@ -216,6 +217,7 @@ export default {
           const timestamp = Math.floor(new Date().getTime() / 1000); // 獲取當前timestamp
           if (res.data.success) {
             this.fetchUserData(timestamp);
+            this.order.is_paid = true;
             this.getOrder(this.orderId);
             Toast.fire({
               title: "付款成功",
