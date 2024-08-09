@@ -757,6 +757,7 @@ export default {
         title: "確定要登出嗎?",
         icon: "warning",
         showCancelButton: true,
+        scrollbarPadding: false,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "是",
