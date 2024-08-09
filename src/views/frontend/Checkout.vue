@@ -217,8 +217,9 @@ export default {
           const timestamp = Math.floor(new Date().getTime() / 1000); // 獲取當前timestamp
           if (res.data.success) {
             this.fetchUserData(timestamp);
-            this.getOrder(this.orderId);
-            this.$forceUpdate();
+            setTimeout(() => {
+              this.getOrder(this.orderId);
+            }, 1000);
             Toast.fire({
               title: "付款成功",
               icon: "success",
