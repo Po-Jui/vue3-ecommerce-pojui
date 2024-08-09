@@ -196,6 +196,7 @@ export default {
           ...orderData,
           cartInfo: { ...subCollectionData },
         };
+        console.log(this.order.is_paid);
         this.isLoading = false;
       } else {
         console.log("No such document!");
