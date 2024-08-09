@@ -199,6 +199,7 @@ export default {
         };
         console.log(this.order);
         console.log(this.order.is_paid);
+        console.log("is_paid", this.is_paid);
         this.isLoading = false;
       } else {
         console.log("No such document!");
