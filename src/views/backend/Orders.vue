@@ -179,7 +179,6 @@ export default {
       this.$http.put(api, { data: paid }).then((response) => {
         this.isLoading = false;
         this.getOrders(this.currentPage);
-        this.$httpMessageState(response, "更新付款狀態");
       });
     },
     async delOrder(orderId) {

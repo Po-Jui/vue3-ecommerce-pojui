@@ -19,10 +19,10 @@
           </h5>
           <div class="text-right">
             <span class="product-origin-price pr-2" v-if="item.origin_price !== 0">
-              {{ item.origin_price }}
+              {{ $filters.currency(item.origin_price) }}
             </span>
             <span>
-              {{ item.price }}
+              {{ $filters.currency(item.price) }}
             </span>
           </div>
         </div>

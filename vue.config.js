@@ -7,7 +7,9 @@ module.exports = defineConfig({
       // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
     }
   },
+
   lintOnSave: false,
+
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
@@ -18,5 +20,7 @@ module.exports = defineConfig({
       }),
     ],
   },
+
+  publicPath: '/vue3-ecommerce-pojui/'
 });
 
