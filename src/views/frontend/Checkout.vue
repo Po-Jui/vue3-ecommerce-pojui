@@ -151,7 +151,7 @@
           </section>
         </div>
       </div>
-      <Successful v-else :orderInfo="order" />
+      <Successful v-else-if="order.is_paid === true" :orderInfo="order" />
     </div>
   </div>
 </template>
