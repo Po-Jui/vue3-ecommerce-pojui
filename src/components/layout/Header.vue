@@ -227,11 +227,22 @@ export default {
         cancelButtonText: "否",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.removeAllCartItem();
           this.$emitter.emit("logout-user"); // 更新登入狀態
         }
       });
     },
-
+    removeAllCartItem() {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/carts`;
+      this.$http
+        .delete(url)
+        .then(() => {
+          this.$emitter.emit("update-total");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     getCart() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.$http.get(url).then((response) => {

@@ -9,7 +9,7 @@
       </loading>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item">
+          <li class="breadcrumb-item ml-3">
             <router-link to="/">Home</router-link>
           </li>
           <li class="breadcrumb-item">
@@ -33,7 +33,6 @@
             <v-card>
               <v-card-title class="headline"><b>放大預覽</b></v-card-title>
               <v-card-text>
-                <!-- <v-img :src="item" class="image-full"></v-img> -->
                 <v-carousel show-arrows="hover" hide-delimiter-background :key="componentKey">
                   <v-carousel-item
                     v-for="(item, i) in imgs"
@@ -141,6 +140,9 @@
 <script>
 import Toast from "@/alert/Toast";
 import Sametype from "@/components/frontend/Sametype.vue";
+import { auth, db } from "@/methods/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default {
   components: {
@@ -161,19 +163,21 @@ export default {
         loadingItem: "",
       },
       profile: `<ul>
-                  <li>每次購物滿 1299 元以上免運費，未達 1299 元 需加付 80 元運費。</li>
-                  <li>出貨時間為 2-3。大型商品(如：帳篷等)以貨運公司配送。</li>
-                  <li>貨品均一年保固免費維修。</li>
+                  <li>每次購物滿 599 元以上免運費，未達 599 元 需加付 60 元運費。</li>
+                  <li>出貨時間為 2-3 個工作天。若商品量大，以貨運公司配送。</li>
                 </ul>`,
       refund: `<p>
                 網路購物的消費者，享有商品貨到日起七天猶豫期。<br />
                 但猶豫期並非試用期，所以，您所退回的商品必須是全新的狀態。
               </p>`,
-      followData: JSON.parse(localStorage.getItem("followCard")) || [],
+      followData: [],
+      userCartItems: [],
+      uid: null,
     };
   },
   created() {
     this.id = this.$route.params.productId;
+    this.getAuthState();
     this.getProduct();
   },
   watch: {
@@ -183,6 +187,38 @@ export default {
     },
   },
   methods: {
+    getAuthState() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (user.emailVerified) {
+            this.uid = user.uid;
+            // console.log(this.uid);
+            this.updateUserCartItem();
+          }
+        }
+      });
+    },
+    async updateUserCartItem(item) {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.userCartItems = docSnap.data().cartItem;
+        if (item !== undefined) {
+          const index = this.userCartItems.findIndex((i) => i.product.id === item.product.id);
+          if (index !== -1) {
+            this.userCartItems.splice(index, 1);
+          }
+          this.userCartItems.push(item);
+          await updateDoc(userDocRef, {
+            cartItem: this.userCartItems,
+          });
+        }
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
     openDialog() {
       this.dialog = true;
     },
@@ -210,6 +246,9 @@ export default {
           this.isLoading = false;
           if (response.data.success === true) {
             this.product = response.data.product;
+            if (this.uid !== null) {
+              this.getFollow();
+            }
             if ("content" in this.product) {
               this.product.content = this.addLineBreaks(this.product.content);
             } else {
@@ -242,48 +281,81 @@ export default {
         });
     },
     addToCart(id, num) {
-      this.status.loadingItem = id;
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      const cart = {
-        product_id: id,
-        qty: num,
-      };
-      this.$http
-        .post(url, { data: cart })
-        .then((response) => {
-          setTimeout(() => {
+      if (this.uid !== null) {
+        this.status.loadingItem = id;
+        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+        const cart = {
+          product_id: id,
+          qty: num,
+        };
+        this.$http
+          .post(url, { data: cart })
+          .then((response) => {
+            this.updateUserCartItem(response.data.data);
+            setTimeout(() => {
+              this.status.loadingItem = "";
+              this.$emitter.emit("update-total"); // 更新購物車數量
+              Toast.fire({
+                title: "已加入購物車",
+                icon: "success",
+              });
+            }, 500);
+          })
+          .catch((err) => {
             this.status.loadingItem = "";
-            this.$emitter.emit("update-total"); // 更新購物車數量
             Toast.fire({
-              title: "已加入購物車",
-              icon: "success",
+              title: `${err.response.data.errors}`,
+              icon: "warning",
             });
-          }, 500);
-        })
-        .catch((err) => {
-          this.status.loadingItem = "";
-          Toast.fire({
-            title: `${err.response.data.errors}`,
-            icon: "warning",
           });
-        });
-    },
-    addFollow(id) {
-      const followId = this.followData.indexOf(id);
-      if (followId === -1) {
-        this.followData.push(id);
-        Toast.fire({
-          title: "已加入收藏",
-          icon: "success",
-        });
       } else {
-        this.followData.splice(followId, 1);
         Toast.fire({
-          title: "已取消收藏",
-          icon: "success",
+          title: "請先登入會員",
+          icon: "warning",
         });
+        this.$router.push("/userlogin");
       }
-      localStorage.setItem("followCard", JSON.stringify(this.followData));
+    },
+    async getFollow() {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.followData = docSnap.data().favorite;
+      }
+    },
+    async addFollow(id) {
+      if (this.uid !== null) {
+        const followId = this.followData.indexOf(id);
+        const userRef = collection(db, "userInfo");
+        const userDocRef = doc(userRef, this.uid);
+        if (followId === -1) {
+          this.followData.push(id);
+          await updateDoc(userDocRef, {
+            favorite: this.followData,
+          });
+          Toast.fire({
+            title: "已加入收藏",
+            icon: "success",
+          });
+        } else {
+          this.followData.splice(followId, 1);
+          await updateDoc(userDocRef, {
+            favorite: this.followData,
+          });
+          Toast.fire({
+            title: "已取消收藏",
+            icon: "success",
+          });
+        }
+        localStorage.setItem("followCard", JSON.stringify(this.followData));
+      } else {
+        Toast.fire({
+          title: "請先登入會員",
+          icon: "warning",
+        });
+        this.$router.push("/userlogin");
+      }
     },
   },
 };

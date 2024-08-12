@@ -79,7 +79,6 @@ export default {
     signIn() {
       const api = `${process.env.VUE_APP_API}admin/signin`;
       this.$http.post(api, this.user).then((res) => {
-        console.log(res);
         if (res.data.success) {
           Toast.fire({
             icon: "success",

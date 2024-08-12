@@ -53,13 +53,13 @@
             <li data-aos="fade-left" data-aos-delay="150">
               <p>
                 <span class="date-new mr-2">2024 / 06 / 19</span>
-                LuxeFume 電商即將上市
+                Belle journée 電商即將上市
               </p>
             </li>
             <li data-aos="fade-left" data-aos-delay="200">
               <p>
                 <span class="date-new mr-2">2024 / 05 / 19</span>
-                LuxeFume 整修中，敬請期待！
+                Belle journée 整修中，敬請期待！
               </p>
             </li>
           </ul>
@@ -78,11 +78,11 @@
             </li>
             <li data-aos="fade-left" data-aos-delay="150">
               <p class="date-new">2024 / 06 / 19</p>
-              <p>LuxeFume 電商即將上市</p>
+              <p>Belle journée 電商即將上市</p>
             </li>
             <li data-aos="fade-left" data-aos-delay="200">
               <p class="date-new">2024 / 05 / 19</p>
-              <p>LuxeFume 整修中，敬請期待！</p>
+              <p>Belle journée 整修中，敬請期待！</p>
             </li>
           </ul>
         </section>

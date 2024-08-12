@@ -121,6 +121,9 @@
 /* global $ */
 import Toast from "@/alert/Toast";
 import Pagination from "@/components/Pagination.vue";
+import { auth, db } from "@/methods/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default {
   data() {
@@ -134,21 +137,56 @@ export default {
       filterType: "",
       products: {},
       sortData: "",
-      followData: JSON.parse(localStorage.getItem("followCard")) || [],
+      followData: [],
       pagination: {},
       carts: {},
+      userCartItems: [],
+      uid: null,
     };
   },
   components: {
     Pagination,
   },
   created() {
+    this.getAuthState();
     this.getProducts();
     if (this.category.length > 0) {
       this.filterType = this.category[0];
     }
   },
   methods: {
+    getAuthState() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (user.emailVerified) {
+            this.uid = user.uid;
+            this.updateUserCartItem();
+          }
+        }
+      });
+    },
+    async updateUserCartItem(item) {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.userCartItems = docSnap.data().cartItem;
+        if (item !== undefined) {
+          const index = this.userCartItems.findIndex((i) => i.product.id === item.product.id);
+          if (index !== -1) {
+            this.userCartItems.splice(index, 1);
+          }
+          this.userCartItems.push(item);
+          await updateDoc(userDocRef, {
+            cartItem: this.userCartItems,
+          });
+        }
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
+    // 取得產品列表
     getProducts() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
       this.isLoading = true;
@@ -156,6 +194,9 @@ export default {
         .get(url)
         .then((response) => {
           this.products = response.data.products;
+          if (this.uid !== null) {
+            this.getFollow();
+          }
           const { categoryName } = this.$route.params;
           if (categoryName) {
             this.filterType = categoryName;
@@ -169,6 +210,14 @@ export default {
           });
           this.isLoading = false;
         });
+    },
+    async getFollow() {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.followData = docSnap.data().favorite;
+      }
     },
     scrollTitle() {
       if (this.filterType === "" || this.filterType === "熱門商品") {
@@ -195,48 +244,72 @@ export default {
       });
     },
     addToCart(id) {
-      this.status.loadingItem = id;
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      const cart = {
-        product_id: id,
-        qty: 1,
-      };
-      this.$http
-        .post(url, { data: cart })
-        .then((response) => {
-          setTimeout(() => {
+      if (this.uid !== null) {
+        this.status.loadingItem = id;
+        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+        const cart = {
+          product_id: id,
+          qty: 1,
+        };
+        this.$http
+          .post(url, { data: cart })
+          .then((response) => {
+            this.updateUserCartItem(response.data.data);
+            setTimeout(() => {
+              this.status.loadingItem = "";
+              this.$emitter.emit("update-total"); // 更新購物車數量
+              Toast.fire({
+                title: "已加入購物車",
+                icon: "success",
+              });
+            }, 500);
+          })
+          .catch((err) => {
             this.status.loadingItem = "";
-            this.$emitter.emit("update-total"); // 更新購物車數量
             Toast.fire({
-              title: "已加入購物車",
-              icon: "success",
+              title: `${err.response.data.errors}`,
+              icon: "warning",
             });
-          }, 500);
-        })
-        .catch((err) => {
-          this.status.loadingItem = "";
-          Toast.fire({
-            title: `${err.response.data.errors}`,
-            icon: "warning",
           });
-        });
-    },
-    addFollow(id) {
-      const followId = this.followData.indexOf(id);
-      if (followId === -1) {
-        this.followData.push(id);
-        Toast.fire({
-          title: "已加入收藏",
-          icon: "success",
-        });
       } else {
-        this.followData.splice(followId, 1);
         Toast.fire({
-          title: "已取消收藏",
-          icon: "success",
+          title: "請先登入會員",
+          icon: "warning",
         });
+        this.$router.push("/userlogin");
       }
-      localStorage.setItem("followCard", JSON.stringify(this.followData));
+    },
+    async addFollow(id) {
+      if (this.uid !== null) {
+        const followId = this.followData.indexOf(id);
+        const userRef = collection(db, "userInfo");
+        const userDocRef = doc(userRef, this.uid);
+        if (followId === -1) {
+          this.followData.push(id);
+          await updateDoc(userDocRef, {
+            favorite: this.followData,
+          });
+          Toast.fire({
+            title: "已加入收藏",
+            icon: "success",
+          });
+        } else {
+          this.followData.splice(followId, 1);
+          await updateDoc(userDocRef, {
+            favorite: this.followData,
+          });
+          Toast.fire({
+            title: "已取消收藏",
+            icon: "success",
+          });
+        }
+      } else {
+        Toast.fire({
+          title: "請先登入會員",
+          icon: "warning",
+        });
+        this.$router.push("/userlogin");
+      }
     },
   },
   computed: {

@@ -475,7 +475,6 @@ export default {
           this.final_total = this.cartTotal;
           this.shipFree = true;
         }
-
         // 添加文檔數據
         await setDoc(orderDoc, {
           cartTotal: Math.round(this.final_total),
@@ -506,7 +505,7 @@ export default {
         return res;
       } catch (error) {
         console.error("Error fetching order:", error);
-        throw error; // 或者可以返回一些預設值或者錯誤信息
+        throw error; // 可以返回一些預設值或者錯誤信息
       }
     },
   },

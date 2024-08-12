@@ -162,9 +162,6 @@
                   </v-card-text>
                 </v-card>
               </v-dialog>
-              <!-- <div>
-                <v-btn color="primary" @click="startCheckout">開始結帳</v-btn>                
-              </div> -->
             </div>
           </section>
         </div>
@@ -198,17 +195,6 @@ export default {
     this.getOrder(this.orderId);
   },
   methods: {
-    // startCheckout() {
-    //   this.loading = true;
-    //   // 模擬結帳過程
-    //   setTimeout(() => {
-    //     this.loading = false;
-    //     Toast.fire({
-    //       title: "結帳成功",
-    //       icon: "success",
-    //     });
-    //   }, 3000);
-    // },
     async getOrder(orderId) {
       this.isLoading = true;
       const orderDoc = doc(db, "orderInfo", orderId);
@@ -226,8 +212,6 @@ export default {
           ...orderData,
           cartInfo: { ...subCollectionData },
         };
-        console.log(this.order);
-        console.log(this.order.is_paid);
         this.isLoading = false;
       } else {
         console.log("No such document!");
@@ -240,9 +224,9 @@ export default {
     },
     payOrder() {
       this.loading = true;
-      // 模擬結帳過程
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`;
       this.isProcessing = true;
+      // 模擬結帳過程
       setTimeout(() => {
         this.$http
           .post(url)

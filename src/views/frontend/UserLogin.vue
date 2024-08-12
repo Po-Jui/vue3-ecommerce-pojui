@@ -168,7 +168,7 @@
                           <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="success" @click.prevent="loginSubmit">登入</v-btn>
-                            <v-btn text color="warning" @click="switchTab(3)">忘記密碼?</v-btn>
+                            <v-btn text color="warning" @click="switchTab(2)">忘記密碼?</v-btn>
                           </v-card-actions>
                           <v-divider>第三方登入</v-divider>
                           <v-container class="d-flex justify-center" style="width: 50%">
@@ -318,6 +318,7 @@ export default {
       isRegistering: false, // 判斷是否為註冊
       displayName: "", // 登入後顯示的會員名稱
       userInfo: [], // 資料庫的會員資料
+      carts: [],
       // 登入後的會員資料
       member: {
         name: "",
@@ -364,10 +365,23 @@ export default {
         hasUpperCase: (value) => /[A-Z]/.test(value) || "需包含至少一個大寫英文字母",
         hasLowerCase: (value) => /[a-z]/.test(value) || "需包含至少一個小寫英文字母",
       },
+      uid: null,
     };
   },
   components: {
     OrderHistory,
+  },
+  watch: {
+    isLogin(newVal, oldVal) {
+      if (newVal) {
+        this.updateCartItem(this.uid);
+        console.log("User is logged in with UID:", newVal);
+        // this.updateUserCartItem(); // 可以在這裡調用更新購物車方法
+      } else {
+        console.log("User is logged out or email is not verified");
+        // 在這裡處理用戶登出或未驗證的情況
+      }
+    },
   },
   created() {
     this.isLoading = true;
@@ -375,6 +389,7 @@ export default {
       if (user) {
         if (user.emailVerified) {
           this.isLogin = true;
+          this.uid = user.uid;
           this.displayName = user.displayName;
           this.member.name = user.displayName;
           this.member.email = user.email;
@@ -513,6 +528,7 @@ export default {
         console.error("Error fetching user info:", error);
       }
     },
+    // 顯示密碼
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
     },
@@ -598,6 +614,10 @@ export default {
         const result = await signInWithPopup(auth, googleprovider);
         const user = result.user;
         this.checkDocExistsMixin(user);
+        Toast.fire({
+          icon: "success",
+          title: `${user.displayName}歡迎回來`,
+        });
       } catch (error) {
         console.error("Error during Google login:", error);
       }
@@ -638,6 +658,56 @@ export default {
         .catch((error) => {
           console.error("Promise rejected with:", error);
         });
+    },
+    async updateCartItem(uid) {
+      const carts = await this.getCart();
+      if (carts.length === 0) {
+        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+        const userRef = collection(db, "userInfo");
+        const userDocRef = doc(userRef, uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const userCartItems = docSnap.data().cartItem;
+          for (const item of userCartItems) {
+            const cart = {
+              product_id: item.product.id,
+              qty: item.qty,
+            };
+            try {
+              // 發送 POST 請求，將 cart 資料傳送至伺服器
+              await this.$http.post(url, { data: cart });
+              // 刪除已處理的項目
+              // 使用 filter 來創建一個新的陣列，排除已處理的項目
+              userCartItems = userCartItems.filter((i) => i !== item);
+            } catch (error) {
+              // console.error("發送請求時發生錯誤:", error);
+            }
+          }
+          // 當所有項目處理完成後，發送事件以更新總計
+          this.$emitter.emit("update-total");
+          console.log("userCartItems:", userCartItems);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }
+    },
+    async getCart() {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+      this.isLoading = true;
+      let carts = [];
+      try {
+        const response = await this.$http.get(url);
+        carts = response.data.data.carts;
+      } catch (error) {
+        Toast.fire({
+          title: "資料讀取失敗，請稍後再試",
+          icon: "error",
+        });
+      } finally {
+        this.isLoading = false;
+      }
+      return carts;
     },
     // 註冊
     passwordMatch(value) {
@@ -714,6 +784,8 @@ export default {
           phoneNumber: "",
           photoURL: null,
           orders: [],
+          cartItem: [],
+          favorite: [],
         });
       } catch (error) {
         console.error("Error adding document: ", error);
@@ -770,6 +842,7 @@ export default {
               this.isLoading = false;
               this.isLogin = false;
               this.tab = 0;
+              this.removeAllCartItem();
               Toast.fire({
                 icon: "success",
                 title: `${this.displayName}貴賓，期待您的再次光臨`,
@@ -792,6 +865,17 @@ export default {
             });
         }
       });
+    },
+    removeAllCartItem() {
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/carts`;
+      this.$http
+        .delete(url)
+        .then(() => {
+          this.$emitter.emit("update-total");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
   },
 };

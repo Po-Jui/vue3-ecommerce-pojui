@@ -191,6 +191,9 @@
 
 <script>
 import Toast from "@/alert/Toast";
+import { auth, db } from "@/methods/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default {
   data() {
@@ -201,12 +204,62 @@ export default {
       isLoading: false,
       products: {},
       coupon_code: "",
+      userCartItems: [],
+      uid: null,
     };
   },
   created() {
+    this.getAuthState();
     this.getCart();
   },
+  watch: {
+    uid(newVal, oldVal) {
+      if (newVal) {
+        console.log("User is logged in with UID:", newVal);
+        // this.updateUserCartItem(); // 可以在這裡調用更新購物車方法
+      } else {
+        console.log("User is logged out or email is not verified");
+        // 在這裡處理用戶登出或未驗證的情況
+        this.$router.replace("/userlogin");
+      }
+    },
+  },
   methods: {
+    getAuthState() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (user.emailVerified) {
+            this.uid = user.uid;
+          } else {
+            this.uid = null; // 如果 email 未驗證，清空 uid
+          }
+        } else {
+          this.uid = null; // 如果沒有用戶，清空 uid
+          Toast.fire({
+            icon: "warning",
+            title: "請先登入會員",
+          });
+          this.$router.replace("/userlogin");
+        }
+      });
+    },
+    async updateUserCartItem(item) {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.userCartItems = docSnap.data().cartItem;
+        if (item !== undefined) {
+          this.userCartItems = item;
+          await updateDoc(userDocRef, {
+            cartItem: this.userCartItems,
+          });
+        }
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
     getCart() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.isLoading = true;
@@ -214,6 +267,9 @@ export default {
         .get(url)
         .then((response) => {
           this.carts = response.data.data.carts;
+          if (this.uid !== null) {
+            this.updateUserCartItem(this.carts);
+          }
           this.updateTotal();
           this.isLoading = false;
         })
@@ -246,7 +302,7 @@ export default {
           product_id: id,
           qty: num,
         };
-        this.$http.put(url, { data: cart }).then((res) => {
+        this.$http.put(url, { data: cart }).then((response) => {
           this.getCart();
           this.isLoading = false;
         });

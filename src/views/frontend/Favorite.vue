@@ -178,6 +178,9 @@
 <script>
 import Toast from "@/alert/Toast";
 import Pagination from "@/components/Pagination.vue";
+import { auth, db } from "@/methods/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default {
   data() {
@@ -189,19 +192,74 @@ export default {
       products: {},
       followProduct: {},
       sortData: "",
-      followData: JSON.parse(localStorage.getItem("followCard")) || [],
+      followData: [],
       pagination: {},
       carts: {},
-      // uuid: process.env.VUE_APP_UUID,
+      uid: null,
     };
   },
   components: {
     Pagination,
   },
   created() {
+    this.getAuthState();
     this.getProducts();
   },
+  watch: {
+    uid(newVal, oldVal) {
+      if (newVal) {
+        console.log("User is logged in with UID:", newVal);
+        // this.updateUserCartItem(); // 可以在這裡調用更新購物車方法
+      } else {
+        console.log("User is logged out or email is not verified");
+        // 在這裡處理用戶登出或未驗證的情況
+        this.$router.replace("/userlogin");
+      }
+    },
+  },
   methods: {
+    getAuthState() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          if (user.emailVerified) {
+            this.uid = user.uid;
+            this.updateUserCartItem();
+          } else {
+            this.uid = null; // 如果 email 未驗證，清空 uid
+          }
+        } else {
+          this.uid = null; // 如果沒有用戶，清空 uid
+          Toast.fire({
+            icon: "warning",
+            title: "請先登入會員",
+          });
+          this.$router.replace("/userlogin");
+        }
+      });
+    },
+    async updateUserCartItem(item) {
+      // console.log(item);
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.userCartItems = docSnap.data().cartItem;
+        if (item !== undefined) {
+          const index = this.userCartItems.findIndex((i) => i.product.id === item.product.id);
+          if (index !== -1) {
+            this.userCartItems.splice(index, 1);
+          }
+          this.userCartItems.push(item);
+          await updateDoc(userDocRef, {
+            cartItem: this.userCartItems,
+          });
+        }
+        console.log("userCartItems:", this.userCartItems);
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
     getProducts() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
       this.isLoading = true;
@@ -209,7 +267,9 @@ export default {
         .get(url)
         .then((response) => {
           this.products = response.data.products;
-          this.getFollow();
+          if (this.uid !== null) {
+            this.getFollow();
+          }
           this.isLoading = false;
         })
         .catch(() => {
@@ -220,7 +280,14 @@ export default {
           this.isLoading = false;
         });
     },
-    getFollow() {
+    async getFollow() {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.followData = docSnap.data().favorite;
+        console.log("followData:", this.followData);
+      }
       this.followProduct = this.products.filter((item) => this.followData.indexOf(item.id) > -1);
     },
     addToCart(id) {
@@ -233,6 +300,7 @@ export default {
       this.$http
         .post(url, { data: cart })
         .then((response) => {
+          this.updateUserCartItem(response.data.data);
           setTimeout(() => {
             this.status.loadingItem = "";
             this.$emitter.emit("update-total"); // 更新購物車數量
@@ -250,7 +318,7 @@ export default {
           });
         });
     },
-    delFollow(id) {
+    async delFollow(id) {
       const followId = this.followData.indexOf(id);
       if (followId !== -1) {
         this.followData.splice(followId, 1);
@@ -258,8 +326,15 @@ export default {
           title: "已取消收藏",
           icon: "success",
         });
+        const userRef = collection(db, "userInfo");
+        const userDocRef = doc(userRef, this.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          await updateDoc(userDocRef, {
+            favorite: this.followData,
+          });
+        }
       }
-      localStorage.setItem("followCard", JSON.stringify(this.followData));
       this.getProducts();
     },
     sortProduct() {
