@@ -303,6 +303,7 @@ export default {
           qty: num,
         };
         this.$http.put(url, { data: cart }).then((response) => {
+          console.log(response);
           this.getCart();
           this.isLoading = false;
         });

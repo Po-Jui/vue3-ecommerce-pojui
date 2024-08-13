@@ -61,7 +61,7 @@
                   <tr>
                     <th>付款時間 :</th>
                     <td>
-                      <span v-if="tempOrder.paid_date !== ''">
+                      <span v-if="tempOrder.paid_date !== '' && tempOrder.is_paid === true">
                         {{ $filters.date(tempOrder.paid_date) }} {{ paidDateDetail }}
                       </span>
                       <span v-else class="text-warning">時間不正確</span>
