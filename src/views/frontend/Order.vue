@@ -239,6 +239,7 @@ export default {
         isMember: false,
         uid: "",
       },
+      userCartItems: [],
       paymentOptions: ["WebATM", "Credit", "LinePay", "ApplePay", "GooglePay"],
       rules: {
         required: (value) => !!value || "此欄位為必填",
@@ -319,6 +320,24 @@ export default {
         }
       });
     },
+    async updateUserCartItem(item) {
+      const userRef = collection(db, "userInfo");
+      const userDocRef = doc(userRef, this.member.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.userCartItems = docSnap.data().cartItem;
+        if (item !== undefined) {
+          this.userCartItems = item;
+          await updateDoc(userDocRef, {
+            cartItem: this.userCartItems,
+          });
+        }
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
+    // 取得購物車
     getCart() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.isLoading = true;
@@ -326,6 +345,9 @@ export default {
         .get(url)
         .then((response) => {
           this.carts = response.data.data.carts;
+          if (this.member.uid !== "") {
+            this.updateUserCartItem(this.carts);
+          }
           if (this.coupon_code === "" || this.coupon_status === false) {
             this.carts.forEach((item) => {
               if ("coupon" in item) {

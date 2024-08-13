@@ -75,9 +75,24 @@
                     </td>
                   </tr>
                   <tr>
+                    <th>優惠券 :</th>
+                    <td>
+                      <strong v-if="tempOrder.isCouponUsed === true" class="text-success">{{
+                        tempOrder.products[0].coupon.title
+                      }}</strong>
+                      <span v-else class="text-danger">無</span>
+                    </td>
+                  </tr>
+                  <tr>
                     <th>總金額 :</th>
                     <td>
                       {{ $filters.currency(tempOrder.cartTotal) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>留言 :</th>
+                    <td>
+                      {{ tempOrder.message }}
                     </td>
                   </tr>
                 </tbody>

@@ -97,14 +97,8 @@
               ><v-container fluid><OrderHistory :ordersInfo="propsItem" /></v-container>
             </v-tabs-window-item>
             <v-tabs-window-item :value="2"
-              ><v-container fluid
-                ><v-text-field
-                  prepend-icon="mdi-lock"
-                  label="原密碼"
-                  placeholder="請輸入原密碼"
-                  type="password"
-                  required
-                ></v-text-field></v-container></v-tabs-window-item
+              ><v-container fluid>
+                <ForgetPassword @switchTab="switchTab" /></v-container></v-tabs-window-item
           ></v-tabs-window>
         </div>
       </div>
@@ -182,100 +176,10 @@
                         </v-card>
                       </v-tabs-window-item>
                       <v-tabs-window-item :value="1">
-                        <v-card class="elevation-12">
-                          <v-card-text
-                            ><v-form ref="registerForm" v-model="valid" lazy-validation>
-                              <v-text-field
-                                prepend-icon="mdi-account-arrow-left"
-                                v-model.trim="register.firstName"
-                                :rules="[rules.required, rules.noSpacesOrSpecial]"
-                                label="名字"
-                                placeholder="請輸入名字"
-                                required
-                              ></v-text-field>
-                              <v-text-field
-                                prepend-icon="mdi-account-arrow-right"
-                                v-model.trim="register.lastName"
-                                :rules="[rules.required, rules.noSpacesOrSpecial]"
-                                label="姓氏"
-                                placeholder="請輸入姓氏"
-                                required
-                              ></v-text-field>
-                              <v-text-field
-                                prepend-icon="mdi-email"
-                                v-model.trim="register.email"
-                                :rules="[rules.required, rules.email]"
-                                label="電子郵件"
-                                placeholder="請輸入email"
-                                required
-                              ></v-text-field>
-                              <v-text-field
-                                :type="showPassword ? 'text' : 'password'"
-                                prepend-icon="mdi-lock"
-                                v-model.trim="register.password"
-                                :rules="[
-                                  rules.required,
-                                  rules.hasUpperCase,
-                                  rules.hasLowerCase,
-                                  rules.min,
-                                  rules.noSpacesOrSpecial,
-                                ]"
-                                label="密碼"
-                                placeholder="請輸入密碼"
-                                required
-                              >
-                                <template v-slot:append>
-                                  <v-icon
-                                    @mousedown="togglePasswordVisibility(true)"
-                                    @mouseup="togglePasswordVisibility(false)"
-                                  >
-                                    {{ showPassword ? "mdi-eye" : "mdi-eye-off" }}
-                                  </v-icon>
-                                </template>
-                              </v-text-field>
-                              <v-text-field
-                                :type="showconfirmPassword ? 'text' : 'password'"
-                                prepend-icon="mdi-lock-check"
-                                v-model.trim="register.confirmPassword"
-                                :rules="[rules.required, passwordMatch]"
-                                label="密碼確認"
-                                placeholder="請再輸入一次密碼"
-                                required
-                              >
-                                <template v-slot:append>
-                                  <v-icon
-                                    @mousedown="toggleConfirmPasswordVisibility(true)"
-                                    @mouseup="toggleConfirmPasswordVisibility(false)"
-                                  >
-                                    {{ showconfirmPassword ? "mdi-eye" : "mdi-eye-off" }}
-                                  </v-icon>
-                                </template>
-                              </v-text-field>
-                              <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="success" @click.prevent="registerSubmit">提交</v-btn>
-                              </v-card-actions>
-                            </v-form></v-card-text
-                          >
-                        </v-card>
+                        <Register @switchTab="switchTab" />
                       </v-tabs-window-item>
                       <v-tabs-window-item :value="2">
-                        <v-card class="elevation-12">
-                          <v-card-text>
-                            <v-form ref="forgetPassword">
-                              <v-text-field
-                                prepend-icon="mdi-email"
-                                ref="forgetPassword"
-                                v-model.trim="forgetPassword"
-                                :rules="[rules.required, rules.email]"
-                                label="請輸入email"
-                              ></v-text-field>
-                              <v-btn class="mt-2" type="submit" block @click.prevent="findPassword"
-                                >重設密碼</v-btn
-                              >
-                            </v-form>
-                          </v-card-text>
-                        </v-card>
+                        <ForgetPassword @switchTab="switchTab" />
                       </v-tabs-window-item>
                     </v-tabs-window>
                   </v-card>
@@ -290,18 +194,17 @@
 </template>
 
 <script>
+import Register from "@/components/frontend/Register.vue";
+import ForgetPassword from "@/components/frontend/ForgetPassword.vue";
 import OrderHistory from "@/components/frontend/OrderHistory.vue";
 import googleLogo from "@/assets/google.png";
 import Toast from "@/alert/Toast";
 import { auth, db, googleprovider } from "@/methods/firebase";
 import { collection, doc, updateDoc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  sendEmailVerification,
   onAuthStateChanged,
-  sendPasswordResetEmail,
   updateProfile,
   signOut,
 } from "firebase/auth";
@@ -311,7 +214,6 @@ export default {
     return {
       googleLogo,
       showPassword: false,
-      showconfirmPassword: false,
       isLoading: false,
       tab: 0, //  預設為第一個tab
       isLogin: false, // 是否登入
@@ -335,15 +237,6 @@ export default {
         account: "",
         password: "",
       },
-      // 註冊欄位
-      register: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
-      forgetPassword: "", // 忘記密碼
       tabCtrl: true,
       propsItem: {},
       rules: {
@@ -370,6 +263,8 @@ export default {
   },
   components: {
     OrderHistory,
+    ForgetPassword,
+    Register,
   },
   watch: {
     isLogin(newVal, oldVal) {
@@ -532,9 +427,6 @@ export default {
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
     },
-    toggleConfirmPasswordVisibility() {
-      this.showconfirmPassword = !this.showconfirmPassword;
-    },
     // 登入
     loginSubmit() {
       this.isLoading = true;
@@ -646,12 +538,7 @@ export default {
         .then((result) => {
           if (result === false) {
             this.member.image = user.photoURL;
-            this.addUserInfoWithCustomId(
-              user.uid,
-              this.member.address,
-              this.member.phone,
-              this.member.image
-            );
+            this.addUserInfoWithCustomId(user.uid, this.member.image);
             this.$emitter.emit("update-user-login-photo", this.member);
           }
         })
@@ -659,9 +546,29 @@ export default {
           console.error("Promise rejected with:", error);
         });
     },
+    // 增加新用户的 uid 到 userInfo 集合
+    async addUserInfoWithCustomId(userId, image) {
+      try {
+        // 指定集合和文檔 ID
+        const userDoc = doc(db, "userInfo", userId);
+
+        // 添加文檔數據
+        await setDoc(userDoc, {
+          address: "",
+          phoneNumber: "",
+          photoURL: image,
+          orders: [],
+          cartItem: [],
+          favorite: [],
+        });
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
+    },
+    // 更新購物車
     async updateCartItem(uid) {
       const carts = await this.getCart();
-      if (carts.length === 0) {
+      if (carts.length === 0 && uid !== null) {
         const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
         const userRef = collection(db, "userInfo");
         const userDocRef = doc(userRef, uid);
@@ -709,121 +616,7 @@ export default {
       }
       return carts;
     },
-    // 註冊
-    passwordMatch(value) {
-      return value === this.register.password || "密碼不匹配";
-    },
-    registerSubmit() {
-      this.isLoading = true;
-      this.isRegistering = true;
-      this.$refs.registerForm.validate().then((res) => {
-        if (res.valid === false) {
-          Toast.fire({
-            icon: "error",
-            title: "請輸入正確資訊",
-          });
-        } else {
-          // Firebase API 傳入auth物件、信箱和密碼 可創立帳號
-          createUserWithEmailAndPassword(auth, this.register.email, this.register.password)
-            .then((res) => {
-              const user = res.user;
-              updateProfile(user, {
-                displayName: this.register.firstName + " " + this.register.lastName,
-              }).then(() => {
-                // 設定認證信箱的基本設定
-                auth.languageCode = "zh-TW";
-                // Firebase API 會寄認證信給指定信箱 要把auth.currentUser傳入
-                sendEmailVerification(auth.currentUser).then(() => {
-                  Toast.fire({
-                    icon: "success",
-                    title: "註冊成功，驗證信已發送到您的信箱，請點選信中驗證連結",
-                  });
-                });
-              });
-              this.addUserInfoWithCustomId(user.uid);
-              this.register = {
-                email: "",
-                password: "",
-                firstName: "",
-                lastName: "",
-                confirmPassword: "",
-              };
-              this.$refs.registerForm.reset();
-              this.switchTab(0);
-            })
-            .catch((error) => {
-              console.log(`錯誤：${error.message}`);
-              switch (error.message) {
-                case "Firebase: Error (auth/email-already-in-use).":
-                  Toast.fire({
-                    icon: "error",
-                    title: "帳號已註冊，請到登入頁面登入",
-                  });
-                  break;
-                default:
-                  Toast.fire({
-                    icon: "error",
-                    title: "註冊失敗",
-                  });
-                  break;
-              }
-            });
-        }
-      });
-      this.isLoading = false;
-    },
-    // 增加新用户的 uid 到 userInfo 集合
-    async addUserInfoWithCustomId(userId) {
-      try {
-        // 指定集合和文檔 ID
-        const userDoc = doc(db, "userInfo", userId);
-
-        // 添加文檔數據
-        await setDoc(userDoc, {
-          address: "",
-          phoneNumber: "",
-          photoURL: null,
-          orders: [],
-          cartItem: [],
-          favorite: [],
-        });
-      } catch (error) {
-        console.error("Error adding document: ", error);
-      }
-    },
-    findPassword() {
-      this.$refs.forgetPassword.validate().then((res) => {
-        if (res.errors.length > 0) {
-          Toast.fire({
-            icon: "error",
-            title: "請輸入正確資訊",
-          });
-        } else {
-          sendPasswordResetEmail(auth, this.forgetPassword)
-            .then(() => {
-              Toast.fire({
-                icon: "success",
-                title:
-                  "如果您的信箱已註冊，我們將發送密碼重置郵件給您，請至您的信箱點選信中連結設定新密碼",
-              });
-              this.forgetPassword = "";
-              this.switchTab(0);
-              this.$refs.forgetPassword.reset();
-            })
-            .catch((error) => {
-              console.log(`錯誤：${error.message}`);
-              switch (error.message) {
-                case "Firebase: Error (auth/missing-email).":
-                  Toast.fire({
-                    icon: "error",
-                    title: "請輸入正確信箱",
-                  });
-                  break;
-              }
-            });
-        }
-      });
-    },
+    // 登出
     logout() {
       this.$swal({
         title: "確定要登出嗎?",
