@@ -27,6 +27,7 @@
       <template #item.orderId="{ item }">
         <a @click.prevent="viewOrder(item)" class="order-Id">{{ item.orderId }}</a>
       </template>
+      <template #item.cartTotal="{ item }">{{ $filters.currency(item.cartTotal) }}</template>
       <template #item.is_paid="{ item }">
         <span v-if="item.is_paid === true" class="text-success">已付款</span>
         <span v-else class="text-danger">未付款</span>
