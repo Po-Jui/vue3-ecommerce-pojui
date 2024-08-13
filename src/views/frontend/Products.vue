@@ -332,10 +332,6 @@ export default {
           filterData = this.products.filter((item) => item.category === "Other");
           this.scrollTitle();
           break;
-        // case "熱門商品":
-        //   filterData = this.products.filter(item => item.options.hot === true);
-        //   this.scrollTitle();
-        //   break;
         default:
           filterData = this.products;
           this.scrollTitle();

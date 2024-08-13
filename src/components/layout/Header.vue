@@ -273,7 +273,7 @@ export default {
 
 <style lang="scss" scoped>
 .v-list-item-title {
-  font-size: 21.5px !important;
+  font-size: 21px !important;
   padding: 0 0 px;
 }
 </style>
