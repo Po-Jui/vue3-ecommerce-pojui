@@ -175,7 +175,7 @@ https://github.com/user-attachments/assets/6b0d3bcd-6bc0-4a48-947c-500e40d78226
 
 - 會員功能 - 會員中心 - 歷史訂單查詢 - 訂單資訊 - 實際畫面
 
-https://github.com/user-attachments/assets/0edbd2a2-6ca2-4b11-973c-e88ecd257afb
+[![會員功能 - 會員中心 - 歷史訂單查詢 - 訂單資訊 - 實際畫面]((https://youtu.be/ZTW1McIBUZs))
 
 - 後台管理 - 登入
 
