@@ -1,4 +1,9 @@
-# vue3-ecommerce-pojui 電商網站
+<div align="center">
+   <a href="https://po-jui.github.io/vue3-ecommerce-pojui/" title="Belle journée" target="_blank">
+      <img src="https://imgur.com/GdDwEDG.png" alt="CandleStudio" width="100">
+   </a>
+   <h1>vue3-ecommerce-pojui 電商網站</h1>
+</div>
 
 vue3-ecommerce-pojui 是一個基於 Vue.js + Firebase 建構而成的電子商務網站，支援 RWD，UI 皆以 SCSS 並遵循 OOCSS 手刻而成，強調樣式的模組化及可重用性，平台使用者主要可分為管理員 (admin)、會員 (member) 兩種身分，管理員可依照主題快速擴展商店，會員可透過前台購物功能進行消費等行為。
 
