@@ -94,7 +94,7 @@ https://github.com/user-attachments/assets/697f0fd7-c656-409b-a9d5-f1d6ffa2475d
 
 - 前台購物 - 商品列表 - 商品介紹 - 實際畫面
 
-<video src="https://imgur.com/7g772Re.mp4" controls muted=true autoplay=true width=100%></video>
+https://imgur.com/7g772Re.mp4
 
 - 前台購物 - 關於我們
 
