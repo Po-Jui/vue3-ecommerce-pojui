@@ -103,7 +103,7 @@ https://github.com/user-attachments/assets/a28cdda5-6f9d-45bf-88e0-526ebf4824ce
 
 - 前台購物 - 關於我們 - 實際畫面
 
-<video src="https://imgur.com/beEotxW.mp4" controls muted=true autoplay=true width=100%></video>
+https://github.com/user-attachments/assets/1123cdf9-b488-41a3-872f-90c1eb85ed76
 
 - 前台購物 - 登入/註冊會員/忘記密碼
 
