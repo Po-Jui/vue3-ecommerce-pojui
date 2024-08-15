@@ -12,7 +12,8 @@
           <div class="follow-title">
             <h3>
               我的收藏
-              <span>( {{ followProduct.length }} )</span>
+              <span v-if="followProduct.length > 0">( {{ followProduct.length }} )</span>
+              <span v-else>( 0 )</span>
             </h3>
             <select
               v-if="followProduct.length > 0"

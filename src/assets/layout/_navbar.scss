@@ -3,58 +3,58 @@
   top: 2px;
   transform: translateY(0px);
 }
-.back-logo{
-  a{
+.back-logo {
+  a {
     color: #fff;
-    &:hover{
+    &:hover {
       text-decoration: none;
     }
   }
 }
-.back-menu{
+.back-menu {
   overflow: hidden;
   position: relative;
   padding: 5px 15px 5px 0;
   width: 100px;
-  a{
+  a {
     color: #fff;
-    &:hover{
+    &:hover {
       color: #fff;
       text-decoration: none;
     }
   }
 }
-.ani{
+.ani {
   .home-span,
-  .sign-span{
+  .sign-span {
     position: absolute;
     display: none;
   }
-  .home-span{
+  .home-span {
     left: 3px;
   }
-  .sign-span{
+  .sign-span {
     right: 19px;
   }
   .opt-home-icon,
-  .opt-signout-icon{
+  .opt-signout-icon {
     @include iconAnimate;
   }
-  .opt-home-icon{
+  .opt-home-icon {
     left: 7px;
   }
-  .opt-signout-icon{
+  .opt-signout-icon {
     right: 21px;
   }
-  &:hover{
+  &:hover {
     .home-span,
-    .sign-span{
+    .sign-span {
       display: block;
       font-weight: bold;
-      font-family:Microsoft JhengHei;
+      font-family: Microsoft JhengHei;
     }
     .opt-home-icon,
-    .opt-signout-icon{
+    .opt-signout-icon {
       transform: translateY(-50px);
     }
   }
