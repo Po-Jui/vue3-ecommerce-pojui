@@ -204,6 +204,10 @@ https://github.com/user-attachments/assets/7117c5d0-e310-4478-b60c-5dc26555df33
 
 ![後台管理(優惠卷管理)](https://imgur.com/ZULSb44.png)
 
+- 404 頁面
+
+![404 頁面](https://imgur.com/1o5iKOP.png)
+
 ## 圖片引用來源
 
 - [Unsplash](https://unsplash.com/)
