@@ -78,7 +78,7 @@ vue3-ecommerce-pojui 是一個基於 Vue.js + Firebase 建構而成的電子商�
 
 - 前台購物 - 首頁 - 實際畫面
 
-<video src="https://imgur.com/1fWQCOs.mp4" controls muted=true autoplay=true width=100%></video>
+[前台購物 - 首頁 - 實際畫面](https://github.com/user-attachments/assets/27b2c738-b566-4906-9029-33cbcd55a2d1)
 
 - 前台購物 - 商品列表 - 全部商品 ( 可選擇分類及排序 )
 
@@ -86,7 +86,7 @@ vue3-ecommerce-pojui 是一個基於 Vue.js + Firebase 建構而成的電子商�
 
 - 前台購物 - 商品列表 - 全部商品 - 實際畫面
 
-<video src="https://imgur.com/d7sQm0j.mp4" controls muted=true autoplay=true width=100%></video>
+[前台購物 - 商品列表 - 全部商品 - 實際畫面](https://github.com/user-attachments/assets/697f0fd7-c656-409b-a9d5-f1d6ffa2475d)
 
 - 前台購物 - 商品列表 - 商品介紹 ( 可選擇數量及相關商品 )
 
