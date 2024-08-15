@@ -103,7 +103,7 @@ https://github.com/user-attachments/assets/a28cdda5-6f9d-45bf-88e0-526ebf4824ce
 
 - 前台購物 - 關於我們 - 實際畫面
 
-https://github.com/user-attachments/assets/1123cdf9-b488-41a3-872f-90c1eb85ed76
+https://github.com/user-attachments/assets/321cc594-a690-4475-a157-121a0e0a2a91
 
 - 前台購物 - 登入/註冊會員/忘記密碼
 
