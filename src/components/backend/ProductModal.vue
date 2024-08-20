@@ -12,7 +12,8 @@
       <div class="modal-content border-0">
         <div class="modal-header bg-dark text-white">
           <h5 class="modal-title" id="exampleModalLabel">
-            <span>新增產品</span>
+            <span>新增產品</span
+            ><span class="ml-3">(<span class="text-danger">*</span>為必填)</span>
           </h5>
           <button
             type="button"
@@ -91,7 +92,9 @@
 
             <div class="col-sm-8">
               <div class="mb-3">
-                <label for="title" class="form-label">標題</label>
+                <label for="title" class="form-label"
+                  >標題 <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -103,7 +106,9 @@
 
               <div class="row gx-2">
                 <div class="mb-3 col-md-6">
-                  <label for="category" class="form-label">分類</label>
+                  <label for="category" class="form-label"
+                    >分類 <span class="text-danger">*</span></label
+                  >
                   <input
                     type="text"
                     class="form-control"
@@ -113,7 +118,9 @@
                   />
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="price" class="form-label">單位</label>
+                  <label for="price" class="form-label"
+                    >單位 <span class="text-danger">*</span></label
+                  >
                   <input
                     type="text"
                     class="form-control"
@@ -126,7 +133,9 @@
 
               <div class="row gx-2">
                 <div class="mb-3 col-md-6">
-                  <label for="origin_price" class="form-label">原價</label>
+                  <label for="origin_price" class="form-label"
+                    >原價 <span class="text-danger">*</span></label
+                  >
                   <input
                     type="number"
                     class="form-control"
@@ -136,7 +145,9 @@
                   />
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="price" class="form-label">售價</label>
+                  <label for="price" class="form-label"
+                    >售價 <span class="text-danger">*</span></label
+                  >
                   <input
                     type="number"
                     class="form-control"

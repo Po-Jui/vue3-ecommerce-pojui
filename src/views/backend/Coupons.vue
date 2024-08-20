@@ -102,7 +102,7 @@ export default {
     getCoupons(page = 1) {
       this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons/?page=${page}`;
-      this.$http.get(url, this.tempProduct).then((response) => {
+      this.$http.get(url).then((response) => {
         this.coupons = response.data.coupons;
         this.pagination = response.data.pagination;
         this.isLoading = false;
@@ -113,11 +113,50 @@ export default {
         const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon`;
         this.$http.post(url, { data: tempCoupon }).then((response) => {
           console.log(response, tempCoupon);
-          Toast.fire({
-            icon: "success",
-            title: "新增優惠券成功",
-          });
-          this.getCoupons();
+          if (response.data.success) {
+            Toast.fire({
+              icon: "success",
+              title: "新增優惠券成功",
+            });
+            this.getCoupons();
+          } else {
+            // response.data.message 重新format
+            const replacements = {
+              title: "標題",
+              percent: "折扣百分比",
+              code: "優惠碼",
+            };
+            const replaceText = (messages) => {
+              return messages.map((message) => {
+                let updatedMessage = message;
+                // 直接替換消息中的鍵和值
+                for (const key in replacements) {
+                  if (updatedMessage.includes(key)) {
+                    updatedMessage = updatedMessage.replace(
+                      new RegExp(key, "g"),
+                      replacements[key]
+                    );
+                  }
+                }
+                return updatedMessage; // 返回更新後的消息
+              });
+            };
+            let tempText = replaceText(response.data.message);
+            let messagesTemp = [];
+            tempText.forEach((item) => {
+              item = item.trim();
+              const [key, message] = item.split(" ");
+              messagesTemp.push(`${key} ${message}`);
+            });
+            let result = messagesTemp.map((item) => `⚠️${item}<br/>`);
+            result = result.join("");
+            Toast.fire({
+              icon: "error",
+              title: "新增優惠券失敗",
+              html: `<b class="text-danger">${result}</b>`,
+            });
+          }
+
           this.$refs.couponModal.hideModal();
         });
       } else {
