@@ -1,6 +1,6 @@
 <div align="center">
    <a href="https://po-jui.github.io/vue3-ecommerce-pojui/" title="Belle journée" target="_blank">
-      <img src="https://imgur.com/GdDwEDG.png" alt="CandleStudio" width="100">
+      <img src="https://i.imgur.com/GdDwEDG.png" alt="CandleStudio" width="100">
    </a>
    <h1>vue3-ecommerce-pojui 電商網站</h1>
 </div>
@@ -71,17 +71,17 @@ vue3-ecommerce-pojui 是一個基於 Vue.js + Firebase 建構而成的電子商�
 
 - 前台購物 - 首頁
 
-![前台購物(首頁)](https://imgur.com/aP7MVk3.png)
+![前台購物(首頁)](https://i.imgur.com/aP7MVk3.png)
 
 - 前台購物 - 首頁 - 最新消息
 
-![前台購物(首頁 - 最新消息)](https://imgur.com/EKKKwDV.png)
+![前台購物(首頁 - 最新消息)](https://i.imgur.com/EKKKwDV.png)
 
 - 前台購物 - 首頁 - 商品專區
 
-![前台購物(首頁 - 商品專區)](https://imgur.com/bQRHzBJ.png)
-![前台購物(首頁 - 商品專區)](https://imgur.com/6nV3Tle.png)
-![前台購物(首頁 - 商品專區)](https://imgur.com/EJd2z61.png)
+![前台購物(首頁 - 商品專區)](https://i.imgur.com/bQRHzBJ.png)
+![前台購物(首頁 - 商品專區)](https://i.imgur.com/6nV3Tle.png)
+![前台購物(首頁 - 商品專區)](https://i.imgur.com/EJd2z61.png)
 
 - 前台購物 - 首頁 - 實際畫面
 
@@ -89,7 +89,7 @@ https://github.com/user-attachments/assets/8970e06b-fb92-4e2d-8353-990dd9969ddf
 
 - 前台購物 - 商品列表 - 全部商品 ( 可選擇分類及排序 )
 
-![前台購物(商品列表 - 全部商品)](https://imgur.com/RijjdWy.png)
+![前台購物(商品列表 - 全部商品)](https://i.imgur.com/RijjdWy.png)
 
 - 前台購物 - 商品列表 - 全部商品 - 實際畫面
 
@@ -97,7 +97,7 @@ https://github.com/user-attachments/assets/9f798620-c145-45ac-9f3b-212c51772819
 
 - 前台購物 - 商品列表 - 商品介紹 ( 可選擇數量及相關商品 )
 
-![前台購物(商品列表 - 商品介紹)](https://imgur.com/CZFhnc3.png)
+![前台購物(商品列表 - 商品介紹)](https://i.imgur.com/CZFhnc3.png)
 
 - 前台購物 - 商品列表 - 商品介紹 - 實際畫面
 
@@ -105,8 +105,8 @@ https://github.com/user-attachments/assets/f8c8ec40-cb52-4640-bb71-0b74f1c20afe
 
 - 前台購物 - 關於我們
 
-![前台購物(關於我們)](https://imgur.com/z7MEg7t.png)
-![前台購物(關於我們)](https://imgur.com/yAk28Cy.png)
+![前台購物(關於我們)](https://i.imgur.com/z7MEg7t.png)
+![前台購物(關於我們)](https://i.imgur.com/yAk28Cy.png)
 
 - 前台購物 - 關於我們 - 實際畫面
 
@@ -114,7 +114,7 @@ https://github.com/user-attachments/assets/321cc594-a690-4475-a157-121a0e0a2a91
 
 - 前台購物 - 登入/註冊會員/忘記密碼
 
-![前台購物(登入頁)](https://imgur.com/ilaoNqr.png)
+![前台購物(登入頁)](https://i.imgur.com/ilaoNqr.png)
 
 - 前台購物 - 登入/註冊會員/忘記密碼 - 實際畫面
 
@@ -130,7 +130,7 @@ https://github.com/user-attachments/assets/5912cc6e-d69a-4a0a-ae28-56d29541ab74
 
 - 會員功能 - 會員中心 - 修改個人資料
 
-![會員功能(會員中心 - 修改個人資料)](https://imgur.com/MMmN1WS.png)
+![會員功能(會員中心 - 修改個人資料)](https://i.imgur.com/MMmN1WS.png)
 
 - 會員功能 - 會員中心 - 修改個人資料 - 實際畫面
 
@@ -138,7 +138,7 @@ https://github.com/user-attachments/assets/ede3d022-a8ac-45f1-abc5-18a80442e06c
 
 - 會員功能 - 會員中心 - 歷史訂單查詢
 
-![會員功能(歷史訂單查詢)](https://imgur.com/pKYTRDS.png)
+![會員功能(歷史訂單查詢)](https://i.imgur.com/pKYTRDS.png)
 
 - 會員功能 - 會員中心 - 歷史訂單查詢 - 實際畫面
 
@@ -146,7 +146,7 @@ https://github.com/user-attachments/assets/a522eb68-19a0-4f26-a671-1b5dec0671af
 
 - 會員功能 - 追蹤商品
 
-![會員功能(追蹤商品)](https://imgur.com/2zp15XE.png)
+![會員功能(追蹤商品)](https://i.imgur.com/2zp15XE.png)
 
 - 會員功能 - 追蹤商品 - 實際畫面
 
@@ -154,7 +154,7 @@ https://github.com/user-attachments/assets/83e69e37-cdd5-40a9-9a69-6c78559d3b76
 
 - 會員功能 - 購物車
 
-![會員功能(購物車)](https://imgur.com/NgCkoTy.png)
+![會員功能(購物車)](https://i.imgur.com/NgCkoTy.png)
 
 - 會員功能 - 購物車 - 實際畫面
 
@@ -162,11 +162,11 @@ https://github.com/user-attachments/assets/491a77d0-95b9-4d63-bf66-1e66e0538dbb
 
 - 會員功能 - 購物清單
 
-![會員功能(購物清單)](https://imgur.com/qP92Dpw.png)
+![會員功能(購物清單)](https://i.imgur.com/qP92Dpw.png)
 
 - 會員功能 - 購物清單 ( 套用優惠券 )
 
-![會員功能(購物清單 - 套用優惠券)](https://imgur.com/uWl38mC.png)
+![會員功能(購物清單 - 套用優惠券)](https://i.imgur.com/uWl38mC.png)
 
 - 會員功能 - 購物清單 ( 套用優惠券 ) - 實際畫面
 
@@ -174,11 +174,11 @@ https://github.com/user-attachments/assets/6b0d3bcd-6bc0-4a48-947c-500e40d78226
 
 - 會員功能 - 結帳付款 (模擬付款)
 
-![會員功能(結帳付款)](https://imgur.com/869AIuU.png)
+![會員功能(結帳付款)](https://i.imgur.com/869AIuU.png)
 
 - 會員功能 - 結帳付款 (模擬付款) - 實際畫面
 
-![會員功能(結帳付款)](https://imgur.com/ab6mTV9.gif)
+![會員功能(結帳付款)](https://i.imgur.com/ab6mTV9.gif)
 
 - 會員功能 - 會員中心 - 歷史訂單查詢 - 訂單資訊 - 實際畫面
 
@@ -186,7 +186,7 @@ https://github.com/user-attachments/assets/332219ef-3826-4132-8bfb-a7cc679a116e
 
 - 後台管理 - 登入
 
-![後台管理(商品管理)](https://imgur.com/4bPTxJZ.png)
+![後台管理(商品管理)](https://i.imgur.com/4bPTxJZ.png)
 
 - 後台管理 - 登入 - 實際畫面
 
@@ -194,19 +194,19 @@ https://github.com/user-attachments/assets/7117c5d0-e310-4478-b60c-5dc26555df33
 
 - 後台管理 - 商品管理
 
-![後台管理(商品管理)](https://imgur.com/6CH1TMq.png)
+![後台管理(商品管理)](https://i.imgur.com/6CH1TMq.png)
 
 - 後台管理 - 訂單管理
 
-![後台管理(訂單管理)](https://imgur.com/7Pffk76.png)
+![後台管理(訂單管理)](https://i.imgur.com/7Pffk76.png)
 
 - 後台管理 - 優惠卷管理
 
-![後台管理(優惠卷管理)](https://imgur.com/ZULSb44.png)
+![後台管理(優惠卷管理)](https://i.imgur.com/ZULSb44.png)
 
 - 404 頁面
 
-![404 頁面](https://imgur.com/1o5iKOP.png)
+![404 頁面](https://i.imgur.com/1o5iKOP.png)
 
 ## 圖片引用來源
 
