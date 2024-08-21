@@ -59,7 +59,7 @@
 import OrderModal from "@/components/backend/OrderModal.vue";
 import Pagination from "@/components/Pagination.vue";
 import { db } from "@/methods/firebase";
-import { Toast } from "bootstrap";
+import Toast from "@/alert/Toast";
 import { collection, doc, getDoc, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
 
 export default {
@@ -176,10 +176,25 @@ export default {
       const paid = {
         is_paid: item.is_paid,
       };
-      this.$http.put(api, { data: paid }).then((response) => {
-        this.isLoading = false;
-        this.getOrders(this.currentPage);
-      });
+      this.$http
+        .put(api, { data: paid })
+        .then((response) => {
+          if (response.data.success) {
+            Toast.fire({
+              icon: "success",
+              title: "付款狀態已更新",
+            });
+            this.isLoading = false;
+            this.getOrders(this.currentPage);
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+          Toast.fire({
+            icon: "error",
+            title: "付款狀態更新失敗",
+          });
+        });
     },
     async delOrder(orderId) {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${this.tempOrder.id}`;
