@@ -312,6 +312,7 @@ export default {
     });
     this.$emitter.on("logout-user", () => {
       this.logout();
+      this.switchTab(0);
     });
   },
   beforeUnmount() {
