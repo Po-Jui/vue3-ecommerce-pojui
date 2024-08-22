@@ -87,6 +87,7 @@ export default {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${currentPage}`;
       this.isLoading = true;
       this.$http.get(url, this.tempProduct).then((response) => {
+        // console.log(response.data);
         this.orders = response.data.orders;
         this.pagination = response.data.pagination;
         this.isLoading = false;
@@ -109,7 +110,20 @@ export default {
           orders.push(orderData);
         }
         this.ordersData = orders;
+        // 取得當前頁數，預設為第1頁
+        const page = currentPage || 1;
+        console.log("Current Page:", page);
+        const pageSize = 10; // 每頁顯示的資料數量
+        // 計算總資料數
+        const totalOrders = this.ordersData.length;
+        // 計算當前頁面的起始和結束索引
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        // 將資料排序
         this.ordersData = this.ordersData.sort((a, b) => b.create_at - a.create_at);
+        // 切分資料成當前頁面的資料
+        const paginatedOrders = this.ordersData.slice(startIndex, endIndex);
+        this.ordersData = paginatedOrders;
       } catch (error) {
         console.error("Error fetching orders with subcollections: ", error);
       }
@@ -216,7 +230,18 @@ export default {
       await updateDoc(userRef, {
         orders: userData,
       });
-      deleteDoc(orderdocRef);
+
+      // 取得要刪除的子集合引用
+      const subCollectionRef = collection(orderdocRef, "cartInfo");
+
+      // 取得子集合中的所有文件
+      const subCollectionSnapshot = await getDocs(subCollectionRef);
+
+      // 逐個刪除子集合中的文件
+      subCollectionSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      await deleteDoc(orderdocRef);
 
       this.$http.delete(url).then((response) => {
         console.log(response);
