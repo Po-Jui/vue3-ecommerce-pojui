@@ -42,6 +42,7 @@ export default {
   props: {
     ordersInfo: {
       type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -58,11 +59,24 @@ export default {
         // { title: "訂單詳情", key: "actions", sortable: false },
       ],
       orders: [],
+      localOrdersInfo: this.ordersInfo,
     };
+  },
+  watch: {
+    ordersInfo: {
+      immediate: true,
+      handler(newValue) {
+        if (Array.isArray(newValue)) {
+          this.localOrdersInfo = newValue;
+        } else {
+          this.localOrdersInfo = [];
+        }
+      },
+    },
   },
   mounted() {
     this.orders = [];
-    this.ordersInfo.forEach((order) => {
+    this.localOrdersInfo.forEach((order) => {
       const orderstemp = {
         orderId: order.orderId,
         create_at: order.create_at,
