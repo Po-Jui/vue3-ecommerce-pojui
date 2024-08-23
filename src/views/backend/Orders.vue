@@ -87,7 +87,7 @@ export default {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${currentPage}`;
       this.isLoading = true;
       this.$http.get(url, this.tempProduct).then((response) => {
-        // console.log(response.data);
+        console.log(response.data.pagination);
         this.orders = response.data.orders;
         this.pagination = response.data.pagination;
         this.isLoading = false;
@@ -111,11 +111,18 @@ export default {
         }
         this.ordersData = orders;
         // 取得當前頁數，預設為第1頁
-        const page = currentPage || 1;
-        console.log("Current Page:", page);
+        let page = currentPage || 1;
         const pageSize = 10; // 每頁顯示的資料數量
         // 計算總資料數
         const totalOrders = this.ordersData.length;
+        const totalPages = Math.ceil(totalOrders / pageSize);
+        // 如果總資料數小於每頁顯示數量，則將頁數設為1
+        if (totalOrders < pageSize) {
+          page = 1;
+          this.currentPage = page;
+        }
+        // 確保頁數不超過總頁數
+        page = Math.max(1, Math.min(page, totalPages));
         // 計算當前頁面的起始和結束索引
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
